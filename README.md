@@ -26,3 +26,15 @@
   - CREATE DATABASE storefront_test;
   - \c storefront_test
   - GRANT ALL PRIVILEGES ON DATABASE storefront_test TO storefront_user;
+
+## Environment Variables
+
+- POSTGRES_HOST=localhost
+- POSTGRES_DB=storefront
+- POSTGRES_DB_TEST=storefront_test
+- POSTGRES_USER=storefront_user
+- POSTGRES_PASSWORD=password123
+- ENV=dev
+- BCRYPT_PASSWORD=speak-friend-and-enter
+- SALT_ROUNDS=10
+- TOKEN_SECRET=password123
