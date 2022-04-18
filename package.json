@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "Storefront backend API project for Udacity assignment",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "build": "npx tsc",
+    "jasmine": "db-migrate --env test up && ENV=test jasmine && db-migrate --env test down",
+    "migrate": "db-migrate up",
+    "test": "npm run build && npm run jasmine",
+    "start": "npm run migrate && nodemon src/index.ts"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fadibeshay/storefront-backend.git"
