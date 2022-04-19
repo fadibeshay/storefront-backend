@@ -16,7 +16,7 @@ export class ProductStore {
       conn.release();
       return result.rows;
     } catch (error) {
-      throw new Error(`Couldn't get the products. ${error}`);
+      throw new Error(`Could not get the products. ${error}`);
     }
   }
 
@@ -29,7 +29,7 @@ export class ProductStore {
       if (!result.rows[0]) throw new Error('Product id is incorrect.');
       return result.rows[0];
     } catch (error) {
-      throw new Error(`Couldn't get product ${id}. ${error}`);
+      throw new Error(`Could not get product ${id}. ${error}`);
     }
   }
 
@@ -46,7 +46,7 @@ export class ProductStore {
       conn.release();
       return result.rows[0];
     } catch (error) {
-      throw new Error(`Couldn't add new product ${product.name}. ${error}`);
+      throw new Error(`Could not add new product ${product.name}. ${error}`);
     }
   }
 
@@ -65,18 +65,19 @@ export class ProductStore {
       if (!result.rows[0]) throw new Error('Product id is incorrect.');
       return result.rows[0];
     } catch (error) {
-      throw new Error(`Couldn't update product ${id}. ${error}`);
+      throw new Error(`Could not update product ${id}. ${error}`);
     }
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number): Promise<boolean> {
     try {
       const conn = await Client.connect();
       const sql = 'DELETE FROM products WHERE id = $1';
-      await conn.query(sql, [id]);
+      const result = await conn.query(sql, [id]);
       conn.release();
+      return result.rowCount ? true : false;
     } catch (error) {
-      throw new Error(`Couldn't delete product ${id}. ${error}`);
+      throw new Error(`Could not delete product ${id}. ${error}`);
     }
   }
 }

@@ -17,7 +17,7 @@ export interface User {
   password: string;
 }
 
-export class userStore {
+export class UserStore {
   async index(): Promise<User[]> {
     try {
       const conn = await Client.connect();
@@ -27,7 +27,7 @@ export class userStore {
 
       return result.rows;
     } catch (error) {
-      throw new Error(`Couldn't get the users. ${error}`);
+      throw new Error(`Could not get the users. ${error}`);
     }
   }
 
@@ -40,7 +40,7 @@ export class userStore {
       if (!result.rows[0]) throw new Error('The user id was not found.');
       return result.rows[0];
     } catch (error) {
-      throw new Error(`Couldn't get user ${id}. ${error}`);
+      throw new Error(`Could not get user ${id}. ${error}`);
     }
   }
 
@@ -64,7 +64,7 @@ export class userStore {
       conn.release();
       return result.rows[0];
     } catch (error) {
-      throw new Error(`Couldn't add new user ${user.username}. ${error}`);
+      throw new Error(`Could not add new user ${user.username}. ${error}`);
     }
   }
 
@@ -84,7 +84,19 @@ export class userStore {
         throw new Error('The username/password is incorrect.');
       }
     } catch (error) {
-      throw new Error(`Couldn't authenticate user ${username}. ${error}`);
+      throw new Error(`Could not authenticate user ${username}. ${error}`);
+    }
+  }
+
+  async delete(id: number): Promise<boolean> {
+    try {
+      const conn = await Client.connect();
+      const sql = 'DELETE FROM users WHERE id=$1';
+      const result = await conn.query(sql, [id]);
+      conn.release();
+      return result.rowCount ? true : false;
+    } catch (error) {
+      throw new Error(`Could not delete user ${id}. ${error}`);
     }
   }
 }
