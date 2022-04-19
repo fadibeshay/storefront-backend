@@ -98,6 +98,8 @@ describe('Tests for user model', (): void => {
   it('delete method should delete the correct user', async () => {
     await expectAsync(store.delete(user.id as number)).toBeResolvedTo(true);
     await expectAsync(store.delete(1000)).toBeResolvedTo(false);
-    expect(await store.index()).toEqual([]);
+    await expectAsync(store.show(user.id as number)).toBeRejectedWithError(
+      `Could not get user ${user.id}. Error: The user id was not found.`
+    );
   });
 });
