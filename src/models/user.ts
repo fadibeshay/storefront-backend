@@ -11,8 +11,8 @@ export enum UserRole {
 export interface User {
   id?: number;
   username: string;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   role?: UserRole;
   password: string;
 }
@@ -25,9 +25,19 @@ export class UserStore {
       const result = await conn.query(sql);
       conn.release();
 
-      return result.rows;
-    } catch (error) {
-      throw new Error(`Could not get the users. ${error}`);
+      return result.rows.map((user) => {
+        return {
+          id: user.id,
+          username: user.username,
+          firstName: user.first_name,
+          lastName: user.last_name,
+          role: user.role,
+          password: user.password,
+        };
+      });
+    } catch (error: unknown) {
+      const { message } = error as Error;
+      throw new Error(`Could not get the users. ${message}`);
     }
   }
 
@@ -38,17 +48,31 @@ export class UserStore {
       const result = await conn.query(sql, [id]);
       conn.release();
       if (!result.rows[0]) throw new Error('The user id was not found.');
-      return result.rows[0];
-    } catch (error) {
-      throw new Error(`Could not get user ${id}. ${error}`);
+      return {
+        id: result.rows[0].id,
+        username: result.rows[0].username,
+        firstName: result.rows[0].first_name,
+        lastName: result.rows[0].last_name,
+        role: result.rows[0].role,
+        password: result.rows[0].password,
+      };
+    } catch (error: unknown) {
+      const { message } = error as Error;
+      throw new Error(`Could not get user ${id}. ${message}`);
     }
   }
 
   async create(user: User): Promise<User> {
     try {
       const conn = await Client.connect();
+      const sql1 = 'SELECT id from users WHERE username=$1';
+      const result1 = await conn.query(sql1, [user.username]);
+      if (result1.rowCount > 0) {
+        throw new Error(`The username ${user.username} is already taken.`);
+      }
+
       const sql =
-        'INSERT INTO users (username, firstname, lastname, role, password) VALUES ($1, $2, $3, $4, $5) RETURNING *';
+        'INSERT INTO users (username, first_name, last_name, role, password) VALUES ($1, $2, $3, $4, $5) RETURNING *';
 
       const hash = await bcrypt.hash(
         user.password + BCRYPT_PASSWORD,
@@ -56,15 +80,23 @@ export class UserStore {
       );
       const result = await conn.query(sql, [
         user.username,
-        user.firstname,
-        user.lastname,
+        user.firstName,
+        user.lastName,
         user.role || UserRole.USER,
         hash,
       ]);
       conn.release();
-      return result.rows[0];
-    } catch (error) {
-      throw new Error(`Could not add new user ${user.username}. ${error}`);
+      return {
+        id: result.rows[0].id,
+        username: result.rows[0].username,
+        firstName: result.rows[0].first_name,
+        lastName: result.rows[0].last_name,
+        role: result.rows[0].role,
+        password: result.rows[0].password,
+      };
+    } catch (error: unknown) {
+      const { message } = error as Error;
+      throw new Error(`Could not add new user ${user.username}. ${message}`);
     }
   }
 
@@ -77,14 +109,22 @@ export class UserStore {
       if (!result.rows[0])
         throw new Error('The username/password is incorrect.');
 
-      const user: User = result.rows[0] as User;
+      const user = result.rows[0];
       if (await bcrypt.compare(password + BCRYPT_PASSWORD, user.password)) {
-        return user;
+        return {
+          id: result.rows[0].id,
+          username: result.rows[0].username,
+          firstName: result.rows[0].first_name,
+          lastName: result.rows[0].last_name,
+          role: result.rows[0].role,
+          password: result.rows[0].password,
+        };
       } else {
         throw new Error('The username/password is incorrect.');
       }
-    } catch (error) {
-      throw new Error(`Could not authenticate user ${username}. ${error}`);
+    } catch (error: unknown) {
+      const { message } = error as Error;
+      throw new Error(`Could not authenticate user ${username}. ${message}`);
     }
   }
 
@@ -95,8 +135,9 @@ export class UserStore {
       const result = await conn.query(sql, [id]);
       conn.release();
       return result.rowCount ? true : false;
-    } catch (error) {
-      throw new Error(`Could not delete user ${id}. ${error}`);
+    } catch (error: unknown) {
+      const { message } = error as Error;
+      throw new Error(`Could not delete user ${id}. ${message}`);
     }
   }
 }
