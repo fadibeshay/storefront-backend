@@ -63,10 +63,10 @@ describe('Tests for orders endpoints', (): void => {
   });
 
   afterAll(async (): Promise<void> => {
-    orderStore.removeProduct(order.id as number, product.id as number);
-    orderStore.delete(order.id as number);
-    productStore.delete(product.id as number);
-    userStore.delete(user.id as number);
+    await orderStore.removeProduct(order.id as number, product.id as number);
+    await orderStore.delete(order.id as number);
+    await productStore.delete(product.id as number);
+    await userStore.delete(user.id as number);
   });
 
   describe('Tests for POST /orders', (): void => {

@@ -19,7 +19,7 @@ const userStore = new UserStore();
 
 describe('Tests for users endpoints', (): void => {
   afterAll(async (): Promise<void> => {
-    userStore.delete(user.id as number);
+    await userStore.delete(user.id as number);
   });
 
   describe('Tests for POST /users endpoint', (): void => {
