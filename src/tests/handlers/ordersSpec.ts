@@ -47,6 +47,7 @@ let token: string;
 
 describe('Tests for orders endpoints', (): void => {
   beforeAll(async (): Promise<void> => {
+    // Add an admin user
     await userStore.create(user);
     const response = await request
       .post('/users/authenticate')
@@ -55,6 +56,7 @@ describe('Tests for orders endpoints', (): void => {
     order.userId = response.body.id;
     token = response.body.token;
 
+    // Add a new product
     const newProduct = await productStore.create(product);
     product.id = newProduct.id;
     orderProduct.productId = newProduct.id as number;

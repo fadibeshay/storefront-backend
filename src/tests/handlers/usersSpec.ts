@@ -17,7 +17,7 @@ let token: string;
 
 const userStore = new UserStore();
 
-describe('Tests for users handler', (): void => {
+describe('Tests for users endpoints', (): void => {
   afterAll(async (): Promise<void> => {
     userStore.delete(user.id as number);
   });
