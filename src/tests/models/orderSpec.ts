@@ -14,13 +14,13 @@ const userStore = new UserStore();
 describe('Tests for order model', (): void => {
   const activeOrder: Order = {
     id: 1,
-    user_id: 1,
+    userId: 1,
     status: OrderStatus.ACTIVE,
   };
 
   const completeOrder: Order = {
     id: 2,
-    user_id: 1,
+    userId: 1,
     status: OrderStatus.COMPLETE,
   };
 
@@ -35,8 +35,8 @@ describe('Tests for order model', (): void => {
 
   const orderProduct: OrderProduct = {
     id: 1,
-    order_id: 1,
-    product_id: 1,
+    orderId: 1,
+    productId: 1,
     quantity: 2,
   };
 
@@ -51,13 +51,13 @@ describe('Tests for order model', (): void => {
     // Add a new user
     const newUser = await userStore.create(user);
     user.id = newUser.id;
-    activeOrder.user_id = newUser.id as number;
-    completeOrder.user_id = newUser.id as number;
+    activeOrder.userId = newUser.id as number;
+    completeOrder.userId = newUser.id as number;
 
     // Add a new product
     const newProduct = await productStore.create(product);
     product.id = newProduct.id;
-    orderProduct.product_id = newProduct.id as number;
+    orderProduct.productId = newProduct.id as number;
   });
 
   afterAll(async () => {
@@ -100,7 +100,7 @@ describe('Tests for order model', (): void => {
   });
 
   it('show method should get the correct order', async (): Promise<void> => {
-    const result = await orderStore.show(activeOrder.id);
+    const result = await orderStore.show(activeOrder.id as number);
     expect(result).toEqual(activeOrder);
   });
 
@@ -114,7 +114,7 @@ describe('Tests for order model', (): void => {
   });
 
   it('addProduct method should add a product to order', async (): Promise<void> => {
-    orderProduct.order_id = activeOrder.id;
+    orderProduct.orderId = activeOrder.id as number;
     const result = await orderStore.addProduct(orderProduct);
     orderProduct.id = result.id;
 
@@ -122,7 +122,7 @@ describe('Tests for order model', (): void => {
   });
 
   it('addProduct method should throw and error if order is complete', async (): Promise<void> => {
-    orderProduct.order_id = completeOrder.id;
+    orderProduct.orderId = completeOrder.id as number;
 
     await expectAsync(
       orderStore.addProduct(orderProduct)
@@ -131,7 +131,7 @@ describe('Tests for order model', (): void => {
 
   it('removeProduct method should remove a product from order', async (): Promise<void> => {
     await expectAsync(
-      orderStore.removeProduct(activeOrder.id, product.id as number)
+      orderStore.removeProduct(activeOrder.id as number, product.id as number)
     ).toBeResolvedTo(true);
     await expectAsync(orderStore.removeProduct(1000, 1000)).toBeResolvedTo(
       false
