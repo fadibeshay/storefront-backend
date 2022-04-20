@@ -14,9 +14,12 @@ export class ProductStore {
       const sql = 'SELECT * FROM products';
       const result = await conn.query(sql);
       conn.release();
-      return result.rows;
-    } catch (error) {
-      throw new Error(`Could not get the products. ${error}`);
+      return result.rows.map((product) => {
+        return { ...product, price: parseFloat(product.price) };
+      });
+    } catch (error: unknown) {
+      const { message } = error as Error;
+      throw new Error(`Could not get the products. ${message}`);
     }
   }
 
@@ -27,9 +30,10 @@ export class ProductStore {
       const result = await conn.query(sql, [id]);
       conn.release();
       if (!result.rows[0]) throw new Error('Product id is incorrect.');
-      return result.rows[0];
-    } catch (error) {
-      throw new Error(`Could not get product ${id}. ${error}`);
+      return { ...result.rows[0], price: parseFloat(result.rows[0].price) };
+    } catch (error: unknown) {
+      const { message } = error as Error;
+      throw new Error(`Could not get product ${id}. ${message}`);
     }
   }
 
@@ -44,9 +48,10 @@ export class ProductStore {
         product.category || null,
       ]);
       conn.release();
-      return result.rows[0];
-    } catch (error) {
-      throw new Error(`Could not add new product ${product.name}. ${error}`);
+      return { ...result.rows[0], price: parseFloat(result.rows[0].price) };
+    } catch (error: unknown) {
+      const { message } = error as Error;
+      throw new Error(`Could not add new product ${product.name}. ${message}`);
     }
   }
 
@@ -63,9 +68,10 @@ export class ProductStore {
       ]);
       conn.release();
       if (!result.rows[0]) throw new Error('Product id is incorrect.');
-      return result.rows[0];
-    } catch (error) {
-      throw new Error(`Could not update product ${id}. ${error}`);
+      return { ...result.rows[0], price: parseFloat(result.rows[0].price) };
+    } catch (error: unknown) {
+      const { message } = error as Error;
+      throw new Error(`Could not update product ${id}. ${message}`);
     }
   }
 
@@ -76,8 +82,9 @@ export class ProductStore {
       const result = await conn.query(sql, [id]);
       conn.release();
       return result.rowCount ? true : false;
-    } catch (error) {
-      throw new Error(`Could not delete product ${id}. ${error}`);
+    } catch (error: unknown) {
+      const { message } = error as Error;
+      throw new Error(`Could not delete product ${id}. ${message}`);
     }
   }
 }

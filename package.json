@@ -8,8 +8,10 @@
     "jasmine": "db-migrate --env test reset && db-migrate --env test up && ENV=test jasmine && db-migrate --env test reset",
     "db:up": "db-migrate up",
     "db:down": "db-migrate reset && db-migrate --env test reset",
+    "data:up": "ts-node src/seeder.ts",
+    "data:down": "ts-node src/seeder.ts -d",
     "test": "npm run build && npm run jasmine",
-    "start": "npm run migrate && nodemon src/index.ts"
+    "start": "npm run db:up && nodemon src/index.ts"
   },
   "repository": {
     "type": "git",

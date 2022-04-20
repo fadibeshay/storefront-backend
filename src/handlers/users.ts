@@ -49,7 +49,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
     lastName: req.body.lastName,
     password: req.body.password,
   };
-  let errMsg: string[] = [];
+  const errMsg: string[] = [];
   if (!user.username || user.username?.length <= 0)
     errMsg.push('username is required');
   if (!user.firstName || user.firstName?.length <= 0)
@@ -86,7 +86,7 @@ const create = async (req: Request, res: Response): Promise<void> => {
 };
 
 const authenticate = async (req: Request, res: Response): Promise<void> => {
-  let errMsg: string[] = [];
+  const errMsg: string[] = [];
   if (!req.body.username || req.body.username?.length <= 0)
     errMsg.push('username is required');
   if (!req.body.password || req.body.password?.length <= 0)
