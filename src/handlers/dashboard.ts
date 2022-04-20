@@ -10,9 +10,11 @@ const currentOrderByUser = async (req: Request, res: Response) => {
       req.body.user.id
     );
     res.status(200).json(currentOrder);
+    return;
   } catch (error) {
     const { message } = error as Error;
     res.status(400).json({ Error: message });
+    return;
   }
 };
 

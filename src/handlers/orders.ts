@@ -11,9 +11,11 @@ const create = async (req: Request, res: Response): Promise<void> => {
       status: OrderStatus.ACTIVE,
     });
     res.status(200).json(newOrder);
+    return;
   } catch (error: unknown) {
     const { message } = error as Error;
-    res.status(500).json({ error: `${message}` });
+    res.status(500).json({ error: message });
+    return;
   }
 };
 
@@ -50,10 +52,12 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
       productId,
       quantity,
     });
-    res.json(result);
+    res.status(200).json(result);
+    return;
   } catch (error: unknown) {
     const { message } = error as Error;
-    res.status(400).json({ Error: `${message}` });
+    res.status(400).json({ Error: message });
+    return;
   }
 };
 

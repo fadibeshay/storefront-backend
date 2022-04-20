@@ -8,9 +8,11 @@ const index = async (_req: Request, res: Response): Promise<void> => {
   try {
     const products = await productStore.index();
     res.status(200).json(products);
+    return;
   } catch (error: unknown) {
     const { message } = error as Error;
-    res.status(500).json({ error: `${message}` });
+    res.status(500).json({ error: message });
+    return;
   }
 };
 
@@ -23,9 +25,11 @@ const show = async (req: Request, res: Response): Promise<void> => {
   try {
     const product = await productStore.show(id);
     res.status(200).json(product);
+    return;
   } catch (error: unknown) {
     const { message } = error as Error;
-    res.status(404).json({ error: `${message}` });
+    res.status(404).json({ error: message });
+    return;
   }
 };
 
@@ -55,9 +59,11 @@ const create = async (req: Request, res: Response): Promise<void> => {
   try {
     const newProduct = await productStore.create(product);
     res.status(200).json(newProduct);
+    return;
   } catch (error: unknown) {
     const { message } = error as Error;
-    res.json({ error: `${message}` });
+    res.json({ error: message });
+    return;
   }
 };
 

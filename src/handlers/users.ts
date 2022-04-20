@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { User, UserStore } from '../models/user';
-import { protect, admin } from '../middlewares/auth';
+import { protect } from '../middlewares/auth';
 
 const store = new UserStore();
 
@@ -17,9 +17,11 @@ const index = async (_req: Request, res: Response): Promise<void> => {
       };
     });
     res.status(200).json(usersOut);
+    return;
   } catch (error: unknown) {
     const { message } = error as Error;
-    res.status(500).json({ error: `${message}` });
+    res.status(500).json({ error: message });
+    return;
   }
 };
 
@@ -27,6 +29,7 @@ const show = async (req: Request, res: Response): Promise<void> => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) {
     res.status(400).json({ error: 'The id should be a number.' });
+    return;
   }
   try {
     const user = await store.show(id);
@@ -36,9 +39,11 @@ const show = async (req: Request, res: Response): Promise<void> => {
       firstname: user.firstName,
       lastname: user.lastName,
     });
+    return;
   } catch (error: unknown) {
     const { message } = error as Error;
-    res.status(400).json({ error: `${message}` });
+    res.status(400).json({ error: message });
+    return;
   }
 };
 
@@ -79,9 +84,11 @@ const create = async (req: Request, res: Response): Promise<void> => {
       lastname: newUser.lastName,
       token: token,
     });
+    return;
   } catch (error: unknown) {
     const { message } = error as Error;
-    res.json({ error: `${message}` });
+    res.json({ error: message });
+    return;
   }
 };
 
@@ -104,16 +111,17 @@ const authenticate = async (req: Request, res: Response): Promise<void> => {
       { id: user.id, username: user.username },
       process.env.TOKEN_SECRET as string
     );
-    res.json({
+    res.status(200).json({
       id: user.id,
       username: user.username,
       firstname: user.firstName,
       lastname: user.lastName,
       token: token,
     });
+    return;
   } catch (error: unknown) {
     const { message } = error as Error;
-    res.status(400).json({ error: `${message}` });
+    res.status(400).json({ error: message });
   }
 };
 
