@@ -27,8 +27,8 @@ describe('Tests for order model', (): void => {
   const user: User = {
     id: 1,
     username: 'johndoe',
-    firstname: 'John',
-    lastname: 'Doe',
+    firstName: 'John',
+    lastName: 'Doe',
     role: UserRole.USER,
     password: 'password123',
   };

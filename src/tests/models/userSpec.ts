@@ -32,8 +32,8 @@ describe('Tests for user model', (): void => {
   const user: User = {
     id: 1,
     username: 'johndoe',
-    firstname: 'John',
-    lastname: 'Doe',
+    firstName: 'John',
+    lastName: 'Doe',
     role: UserRole.ADMIN,
     password: 'password123',
   };
@@ -41,8 +41,8 @@ describe('Tests for user model', (): void => {
   it('create method should add a new user', async (): Promise<void> => {
     const result = await store.create(user);
     expect(result.username).toBe(user.username);
-    expect(result.firstname).toBe(user.firstname);
-    expect(result.lastname).toBe(user.lastname);
+    expect(result.firstName).toBe(user.firstName);
+    expect(result.lastName).toBe(user.lastName);
     expect(result.role).toBe(UserRole.ADMIN);
     await expectAsync(
       bcrypt.compare(user.password + BCRYPT_PASSWORD, result.password)
@@ -57,8 +57,8 @@ describe('Tests for user model', (): void => {
   it('show method should return the correct user', async (): Promise<void> => {
     const result = await store.show(user.id as number);
     expect(result.username).toBe(user.username);
-    expect(result.firstname).toBe(user.firstname);
-    expect(result.lastname).toBe(user.lastname);
+    expect(result.firstName).toBe(user.firstName);
+    expect(result.lastName).toBe(user.lastName);
     expect(result.role).toBe(UserRole.ADMIN);
     await expectAsync(
       bcrypt.compare(user.password + BCRYPT_PASSWORD, result.password)
@@ -67,15 +67,15 @@ describe('Tests for user model', (): void => {
 
   it('show method should throw an error if id is incorrect', async (): Promise<void> => {
     await expectAsync(store.show(100)).toBeRejectedWithError(
-      `Could not get user 100. Error: The user id was not found.`
+      `Could not get user 100. The user id was not found.`
     );
   });
 
   it('authenticate method should return the correct user if credentials are OK', async (): Promise<void> => {
     const result = await store.authenticate(user.username, user.password);
     expect(result.username).toBe(user.username);
-    expect(result.firstname).toBe(user.firstname);
-    expect(result.lastname).toBe(user.lastname);
+    expect(result.firstName).toBe(user.firstName);
+    expect(result.lastName).toBe(user.lastName);
     expect(result.role).toBe(UserRole.ADMIN);
     await expectAsync(
       bcrypt.compare(user.password + BCRYPT_PASSWORD, result.password)
@@ -86,12 +86,12 @@ describe('Tests for user model', (): void => {
     await expectAsync(
       store.authenticate('notfound', user.password)
     ).toBeRejectedWithError(
-      `Could not authenticate user notfound. Error: The username/password is incorrect.`
+      `Could not authenticate user notfound. The username/password is incorrect.`
     );
     await expectAsync(
       store.authenticate(user.username, 'wrongpass')
     ).toBeRejectedWithError(
-      `Could not authenticate user ${user.username}. Error: The username/password is incorrect.`
+      `Could not authenticate user ${user.username}. The username/password is incorrect.`
     );
   });
 
@@ -99,7 +99,7 @@ describe('Tests for user model', (): void => {
     await expectAsync(store.delete(user.id as number)).toBeResolvedTo(true);
     await expectAsync(store.delete(1000)).toBeResolvedTo(false);
     await expectAsync(store.show(user.id as number)).toBeRejectedWithError(
-      `Could not get user ${user.id}. Error: The user id was not found.`
+      `Could not get user ${user.id}. The user id was not found.`
     );
   });
 });

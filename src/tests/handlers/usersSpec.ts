@@ -7,8 +7,8 @@ const request = supertest(app);
 const user: User = {
   id: 1,
   username: 'janedoe',
-  firstname: 'Jane',
-  lastname: 'Doe',
+  firstName: 'Jane',
+  lastName: 'Doe',
   password: 'password123',
   role: UserRole.USER,
 };
@@ -52,21 +52,6 @@ describe('Tests for users handler', (): void => {
     });
   });
 
-  describe('Tests for GET /users/:id endpoint', (): void => {
-    it('should return status code 200 and the correct user', async (): Promise<void> => {
-      const response = await request
-        .get(`/users/${user.id}`)
-        .set('Authorization', 'Bearer ' + token);
-      expect(response.status).toBe(200);
-      expect(response.body.username).toBe(user.username);
-    });
-
-    it('should return status code 401 if no token sent', async (): Promise<void> => {
-      const response = await request.get(`/users/${user.id}`);
-      expect(response.status).toBe(401);
-    });
-  });
-
   describe('Tests for POST /users/authenitcate endpoint', (): void => {
     it('should return status code 200 and a token', async (): Promise<void> => {
       const response = await request
@@ -75,6 +60,7 @@ describe('Tests for users handler', (): void => {
       expect(response.status).toBe(200);
       expect(response.body.token).toBeDefined();
       expect(response.body.id).toBe(user.id);
+      token = response.body.token;
     });
 
     it('should return status code 400 if one field is missing', async (): Promise<void> => {
@@ -90,6 +76,21 @@ describe('Tests for users handler', (): void => {
         .post('/users/authenticate')
         .send({ username: 'invalid', password: 'invalid' });
       expect(response.status).toBe(400);
+    });
+  });
+
+  describe('Tests for GET /users/:id endpoint', (): void => {
+    it('should return status code 200 and the correct user', async (): Promise<void> => {
+      const response = await request
+        .get(`/users/${user.id}`)
+        .set('Authorization', 'Bearer ' + token);
+      expect(response.status).toBe(200);
+      expect(response.body.username).toBe(user.username);
+    });
+
+    it('should return status code 401 if no token sent', async (): Promise<void> => {
+      const response = await request.get(`/users/${user.id}`);
+      expect(response.status).toBe(401);
     });
   });
 });
