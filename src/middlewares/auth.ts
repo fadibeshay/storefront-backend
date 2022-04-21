@@ -28,7 +28,7 @@ export const protect = async (
 
     try {
       const user: User = await userStore.show(decoded.id);
-      req.body.user = user;
+      res.locals.user = user;
       next();
     } catch (error: unknown) {
       const { message } = error as Error;
@@ -46,7 +46,7 @@ export const admin = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  if (req.body.user && req.body.user?.role === UserRole.ADMIN) {
+  if (res.locals.user && res.locals.user?.role === UserRole.ADMIN) {
     next();
   } else {
     res.status(401).json({ error: 'Not authorized as admin.' });

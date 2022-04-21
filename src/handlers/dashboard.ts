@@ -7,7 +7,7 @@ const dashboardQueries = new DashboardQueries();
 const currentOrderByUser = async (req: Request, res: Response) => {
   try {
     const currentOrder = await dashboardQueries.CurrentOrderByUser(
-      req.body.user.id
+      res.locals.user.id
     );
     res.status(200).json(currentOrder);
     return;

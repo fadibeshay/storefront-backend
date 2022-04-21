@@ -7,7 +7,7 @@ const orderStore = new OrderStore();
 const create = async (req: Request, res: Response): Promise<void> => {
   try {
     const newOrder = await orderStore.create({
-      userId: req.body.user.id,
+      userId: res.locals.user.id,
       status: OrderStatus.ACTIVE,
     });
     res.status(200).json(newOrder);
@@ -42,7 +42,7 @@ const addProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const order = await orderStore.show(orderId);
 
-    if (order.userId !== req.body.user.id) {
+    if (order.userId !== res.locals.user.id) {
       res.status(401).json({ Error: 'Not authorized to modify this order.' });
       return;
     }
